@@ -1,0 +1,191 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+<div class="wrapper" id="authWrapper" [class.signup-active]="!isLoginActive">
+  <!-- Image Panel -->
+  <div class="image-side">
+    <img [src]="isLoginActive ? './../../assets/loginBG.jpg' : './../../assets/registerBG.jpg'" alt="Auth Image" />
+  </div>
+
+  <!-- Form Panel -->
+  <div class="form-side">
+    <!-- Login Panel -->
+    <div class="login-content" *ngIf="isLoginActive">
+      <h2>Welcome Back!</h2>
+      <p>Please enter your email and password</p>
+
+      <form [formGroup]="loginForm" (ngSubmit)="loginSubmitted()">
+        <div class="flex">
+          <div class="flex-1">
+            <div class="input-container"
+              [ngClass]="{'error': (login_emailControl.touched || isLoginFormSubmitted) && login_emailControl.errors?.['required']}">
+              <i class="fas fa-envelope icon"></i>
+              <input type="email" id="email" class="form-input" formControlName="email" placeholder=" " required>
+              <label for="email">Email</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex">
+          <div class="flex-1">
+            <div class="input-container"
+              [ngClass]="{'error': (login_passwordControl.touched || isLoginFormSubmitted) && login_passwordControl.errors?.['required']}">
+              <i class="fa fa-lock icon"></i>
+              <input [type]="showLoginPassword ? 'text' : 'password'" id="password" class="form-input" formControlName="password" placeholder=" "
+                required>
+              <label for="password">Password</label>
+              <button type="button" class="password-toggle" (click)="togglePasswordVisibility('login')">
+                <i class="fas" [class.fa-eye]="!showLoginPassword" [class.fa-eye-slash]="showLoginPassword"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Remember Me + Forgot Password -->
+        <div class="options">
+          <div class="remember-me">
+            <label class="toggle-switch">
+              <input type="checkbox">
+              <span class="slider"></span>
+            </label>
+            <span class="remember-text">Remember me</span>
+          </div>
+          <a [routerLink]="['/register']" class="gradient-link">Forgot Password?</a>
+        </div>
+
+        <button type="submit" class="button button-green-back" [disabled]="isLoggingIn">
+          <div class="btn-content">
+            <span>Login</span>
+            <div class="spinner" *ngIf="isLoggingIn"></div>
+          </div>
+        </button>
+
+        <div class="divider">
+          <hr />
+          <span class="separator">Or</span>
+          <hr />
+        </div>
+
+        <button type="button" class="social-btn google-btn">
+          <img src="./../../assets/google-logo.png" alt="Google"> Google
+        </button>
+
+        <div class="toggle-link">
+          Don't have an account? <a (click)="toggleForm()">Create Account</a>
+        </div>
+      </form>
+    </div>
+
+    <!-- Signup Panel -->
+    <div class="signup-content" *ngIf="!isLoginActive">
+      <form [formGroup]="registerForm" (ngSubmit)="registerSubmitted()">
+        <div class="registerHeading">
+          <h2>Create Account</h2>
+          <p>Sign up with your details</p>
+        </div>
+
+        <!-- Error Message -->
+        <div class="error-message" *ngIf="registrationError">
+          {{ registrationError }}
+        </div>
+
+        <!-- Full Name -->
+        <div class="flex">
+          <div class="flex-1">
+            <div class="input-container"
+              [ngClass]="{'error': (register_fullNameControl.touched || isRegisterFormSubmitted) && register_fullNameControl.errors?.['required']}">
+              <i class="fas fa-user icon"></i>
+              <input type="text" id="fullName" class="form-input" formControlName="fullName" placeholder=" " required />
+              <label for="fullName">Full Name</label>
+              <div class="validation-message" *ngIf="(register_fullNameControl.touched || isRegisterFormSubmitted) && register_fullNameControl.errors?.['required']">
+                Full name is required
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Email -->
+        <div class="flex">
+          <div class="flex-1">
+            <div class="input-container"
+              [ngClass]="{'error': (register_emailControl.touched || isRegisterFormSubmitted) && (register_emailControl.errors?.['required'] || register_emailControl.errors?.['email'])}">
+              <i class="fas fa-envelope icon"></i>
+              <input type="email" id="registerEmail" class="form-input" formControlName="email" placeholder=" " required />
+              <label for="registerEmail">Email</label>
+              <div class="validation-message" *ngIf="(register_emailControl.touched || isRegisterFormSubmitted) && register_emailControl.errors?.['required']">
+                Email is required
+              </div>
+              <div class="validation-message" *ngIf="(register_emailControl.touched || isRegisterFormSubmitted) && register_emailControl.errors?.['email']">
+                Please enter a valid email address
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div class="flex">
+          <div class="flex-1">
+            <div class="input-container"
+              [ngClass]="{'error': (register_passwordControl.touched || isRegisterFormSubmitted) && (register_passwordControl.errors?.['required'] || register_passwordControl.errors?.['minlength'] || register_passwordControl.errors?.['pattern'])}">
+              <i class="fas fa-lock icon"></i>
+              <input [type]="showRegisterPassword ? 'text' : 'password'" id="registerPassword" class="form-input" formControlName="password" placeholder=" " required />
+              <label for="registerPassword">Password</label>
+              <button type="button" class="password-toggle" (click)="togglePasswordVisibility('register')">
+                <i class="fas" [class.fa-eye]="!showRegisterPassword" [class.fa-eye-slash]="showRegisterPassword"></i>
+              </button>
+              <div class="validation-message" *ngIf="(register_passwordControl.touched || isRegisterFormSubmitted) && register_passwordControl.errors?.['required']">
+                Password is required
+              </div>
+              <div class="validation-message" *ngIf="(register_passwordControl.touched || isRegisterFormSubmitted) && (register_passwordControl.errors?.['minlength'] || register_passwordControl.errors?.['pattern'])">
+                Password must be at least 6 characters with letters and numbers
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="flex">
+          <div class="flex-1">
+            <div class="input-container"
+              [ngClass]="{'error': (register_confirmPasswordControl.touched || isRegisterFormSubmitted) && (register_confirmPasswordControl.errors?.['required'] || registerForm.errors?.['compareValidator'])}">
+              <i class="fas fa-lock icon"></i>
+              <input [type]="showConfirmPassword ? 'text' : 'password'" id="confirmPassword" class="form-input" formControlName="confirmPassword" placeholder=" " required />
+              <label for="confirmPassword">Confirm Password</label>
+              <button type="button" class="password-toggle" (click)="togglePasswordVisibility('confirm')">
+                <i class="fas" [class.fa-eye]="!showConfirmPassword" [class.fa-eye-slash]="showConfirmPassword"></i>
+              </button>
+              <div class="validation-message" *ngIf="(register_confirmPasswordControl.touched || isRegisterFormSubmitted) && register_confirmPasswordControl.errors?.['required']">
+                Please confirm your password
+              </div>
+              <div class="validation-message" *ngIf="(register_confirmPasswordControl.touched || isRegisterFormSubmitted) && registerForm.errors?.['compareValidator']">
+                Passwords do not match
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="button button-green-back" [disabled]="isRegistering">
+          <div class="btn-content">
+            <span>Register</span>
+            <div class="spinner" *ngIf="isRegistering"></div>
+          </div>
+        </button>
+
+        <div class="divider">
+          <hr />
+          <span class="separator">Or</span>
+          <hr />
+        </div>
+
+        <!-- Social Login Button -->
+        <button type="button" class="social-btn google-btn">
+          <img src="./../../assets/google-logo.png" alt="Google" /> Continue with Google
+        </button>
+
+        <div class="toggle-link">
+          Already have an account? <a (click)="toggleForm()">Login</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

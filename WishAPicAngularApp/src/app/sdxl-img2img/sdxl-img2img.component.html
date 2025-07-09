@@ -1,0 +1,181 @@
+<div class="sdxl-container">
+  <div class="header">
+    <h2>Image to Image Generation</h2>
+    <p class="subtitle">Transform your images using WISH A PIC</p>
+  </div>
+
+  <div class="content-wrapper">
+    <div class="creative-prompt">
+      <label class="creative-prompt-label" for="prompt">CREATIVE PROMPT <i
+          class="fas fa-magic creative-prompt-icon"></i>
+      </label>
+      <div class="creative-prompt-input-container">
+        <input type="text" id="prompt" class="creative-prompt-input" [(ngModel)]="prompt"
+          placeholder="Describe how you want to transform your image..." />
+      </div>
+    </div>
+
+    <div class="parameters-section">
+      <h3>Generation Parameters</h3>
+      <div class="param-grid">
+        <div class="param-group">
+          <label for="strength">
+            <i class="fas fa-sliders-h"></i>
+            Transformation Strength
+            <div class="danger-level" [class.high]="strength > 0.8" [class.medium]="strength > 0.6 && strength <= 0.8">
+              <i class="fas" [class.fa-exclamation-circle]="strength > 0.8"
+                [class.fa-exclamation-triangle]="strength > 0.6 && strength <= 0.8"></i>
+            </div>
+          </label>
+          <div class="param-description">
+            Controls how much the original image will be transformed. Higher values create more dramatic changes.
+            <span class="danger-tip" *ngIf="strength > 0.8">High values may significantly alter the original
+              image.</span>
+          </div>
+          <div class="input-wrapper dual-input">
+            <input type="range" id="strength" [(ngModel)]="strength" step="0.05" min="0" max="1"
+              [class.danger-high]="strength > 0.8" [class.danger-medium]="strength > 0.6 && strength <= 0.8" />
+            <input type="number" [(ngModel)]="strength" step="0.05" min="0" max="1" class="value-input" />
+          </div>
+          <div class="range-labels">
+            <span>Subtle</span>
+            <span>Balanced</span>
+            <span>Dramatic</span>
+          </div>
+        </div>
+
+        <div class="param-group">
+          <label for="guidance">
+            <i class="fas fa-compass"></i>
+            Guidance Scale
+            <div class="danger-level" [class.high]="guidanceScale > 15"
+              [class.medium]="guidanceScale > 10 && guidanceScale <= 15">
+              <i class="fas" [class.fa-exclamation-circle]="guidanceScale > 15"
+                [class.fa-exclamation-triangle]="guidanceScale > 10 && guidanceScale <= 15"></i>
+            </div>
+          </label>
+          <div class="param-description">
+            Determines how closely the result follows your prompt. Higher values create more precise but potentially
+            less creative results.
+            <span class="danger-tip" *ngIf="guidanceScale > 15">High values may lead to oversaturated or unnatural
+              results.</span>
+          </div>
+          <div class="input-wrapper dual-input">
+            <input type="range" id="guidance" [(ngModel)]="guidanceScale" min="1" max="20" step="0.5"
+              [class.danger-high]="guidanceScale > 15"
+              [class.danger-medium]="guidanceScale > 10 && guidanceScale <= 15" />
+            <input type="number" [(ngModel)]="guidanceScale" step="0.5" min="1" max="20" class="value-input" />
+          </div>
+          <div class="range-labels">
+            <span>Creative</span>
+            <span>Balanced</span>
+            <span>Precise</span>
+          </div>
+        </div>
+
+        <div class="param-group">
+          <label for="steps">
+            <i class="fas fa-shoe-prints"></i>
+            Inference Steps
+            <div class="danger-level" [class.high]="steps > 100" [class.medium]="steps > 75 && steps <= 100">
+              <i class="fas" [class.fa-exclamation-circle]="steps > 100"
+                [class.fa-exclamation-triangle]="steps > 75 && steps <= 100"></i>
+            </div>
+          </label>
+          <div class="param-description">
+            Number of refinement iterations. Higher values generally produce better quality but take longer to generate.
+            <span class="danger-tip" *ngIf="steps > 100">Very high values may not significantly improve quality but will
+              increase generation time.</span>
+          </div>
+          <div class="input-wrapper dual-input">
+            <input type="range" id="steps" [(ngModel)]="steps" min="20" max="150" step="1"
+              [class.danger-high]="steps > 100" [class.danger-medium]="steps > 75 && steps <= 100" />
+            <input type="number" [(ngModel)]="steps" step="1" min="20" max="150" class="value-input" />
+          </div>
+          <div class="range-labels">
+            <span>Fast</span>
+            <span>Balanced</span>
+            <span>Detailed</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="images-section">
+      <div class="image-cards">
+        <!-- Source Image Card -->
+        <div class="image-card source" (click)="triggerFileInput(imageInput)" [class.has-image]="previewUrl">
+          <div class="card-content">
+            <div class="image-wrapper">
+              <img [src]="previewUrl || defaultPreview" alt="Source image" />
+              <div class="overlay">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <span>{{ previewUrl ? 'Change Image' : 'Upload Image' }}</span>
+              </div>
+            </div>
+            <div class="card-footer">
+              <span class="card-label">Source Image</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Result Image Card -->
+        <div class="image-card result">
+          <div class="card-content">
+            <!-- Loading State -->
+            <ng-container *ngIf="loading">
+              <div class="loading-state">
+                <app-loader></app-loader>
+                <div class="progress-container">
+                  <div class="progress-bar">
+                    <div class="progress-fill" [style.width.%]="progress"></div>
+                  </div>
+                  <span class="time-remaining">
+                    <i class="fas fa-clock"></i>
+                    {{ formatRemainingTime() }}
+                  </span>
+                </div>
+              </div>
+            </ng-container>
+
+            <!-- Generated Image -->
+            <ng-container *ngIf="generatedUrl && !loading">
+              <div class="image-wrapper">
+                <img [src]="generatedUrl" alt="Generated image" />
+                <div class="action-buttons">
+                  <a class="action-btn download" [href]="generatedUrl" download="generated.png" title="Download">
+                    <i class="fas fa-download"></i>
+                  </a>
+                  <button class="action-btn edit" (click)="replaceWithGenerated()" title="Use as Source">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="card-footer">
+                <span class="card-label">Generated Result</span>
+              </div>
+            </ng-container>
+
+            <!-- Error State -->
+            <ng-container *ngIf="error && !loading">
+              <div class="error-state">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p>{{ error }}</p>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <input type="file" #imageInput accept="image/*" hidden (change)="onFileSelected($event)" />
+
+    <div class="action-section">
+      <button class="generate-btn" [disabled]="!selectedImage || loading" (click)="generate()">
+        <i class="fas fa-wand-magic-sparkles"></i>
+        {{ loading ? 'Generating...' : 'Transform Image' }}
+      </button>
+    </div>
+  </div>
+</div>

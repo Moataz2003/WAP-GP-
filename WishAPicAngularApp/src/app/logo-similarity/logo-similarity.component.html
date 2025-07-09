@@ -1,0 +1,65 @@
+<div class="logo-similarity-container">
+  <h2>🔍 Logo Similarity Search</h2>
+
+  <div class="upload-section">
+    <input #fileInput type="file" accept="image/*" (change)="onFileSelected($event)" hidden>
+
+    <div class="upload-box"
+         [class.has-preview]="previewUrl"
+         (click)="!previewUrl && triggerFileInput(fileInput)"
+         (dragover)="$event.preventDefault()"
+         (drop)="$event.preventDefault(); onFileSelected($event)">
+
+      <!-- Preview Image -->
+      <div class="preview-container" *ngIf="previewUrl" (click)="triggerFileInput(fileInput)">
+        <img [src]="previewUrl" alt="Preview" class="preview-image" />
+      </div>
+
+      <!-- Upload Prompt -->
+      <ng-container *ngIf="!previewUrl">
+        <i class="fas fa-cloud-upload-alt"></i>
+        <p>Drop your logo here or click to upload</p>
+        <small>Supported formats: PNG, JPG, JPEG (max 5MB)</small>
+      </ng-container>
+    </div>
+
+    <div *ngIf="error" class="error-message">
+      <i class="fas fa-exclamation-circle"></i>
+      {{ error }}
+    </div>
+
+    <button class="match-button"
+            [disabled]="!selectedFile || loading"
+            (click)="uploadAndMatch()">
+      <i class="fas fa-search"></i>
+      {{ loading ? 'Searching...' : 'Find Similar Logos' }}
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Analyzing logo and finding matches...</p>
+  </div>
+
+  <!-- Results Section -->
+  <div *ngIf="!loading && results.length > 0" class="results-container">
+    <h3>Similar Logos Found</h3>
+    <div class="results-grid">
+      <div *ngFor="let result of results" class="result-card">
+        <div class="image-container">
+          <img [src]="result.url" [alt]="result.filename" />
+        </div>
+        <div class="result-info">
+          <p class="similarity">Similarity: {{ (result.similarity * 100).toFixed(1) }}%</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- No Results State -->
+  <div *ngIf="!loading && results.length === 0 && matchedOnce" class="no-results">
+    <i class="fas fa-search"></i>
+    <p>No similar logos found above the similarity threshold.</p>
+  </div>
+</div>

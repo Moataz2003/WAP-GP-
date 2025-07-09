@@ -1,0 +1,67 @@
+<div class="background-removal-container">
+  <h1>Background Removal Tool</h1>
+
+  <!-- Hidden file input -->
+  <input #fileInput type="file" accept="image/*" (change)="onFileSelected($event)" hidden>
+
+  <div class="upload-section" *ngIf="!selectedImage">
+    <div class="upload-box" (click)="fileInput.click()" (dragover)="$event.preventDefault()" (drop)="$event.preventDefault(); onFileSelected($event)">
+      <i class="fas fa-cloud-upload-alt"></i>
+      <p>Drop your image here or click to upload</p>
+    </div>
+  </div>
+
+  <div class="image-processing-section" *ngIf="selectedImage">
+    <div class="images-container">
+      <!-- Original Image -->
+      <div class="image-box">
+        <h3>Original Image</h3>
+        <div class="image-wrapper">
+          <img [src]="selectedImage" alt="Original Image">
+        </div>
+      </div>
+
+      <!-- Processed Image -->
+      <div class="image-box">
+        <h3>Processed Image</h3>
+        <div class="image-wrapper" [class.processing]="isProcessing">
+          <ng-container *ngIf="!isProcessing && !processedImage">
+            <div class="placeholder">
+              <i class="fas fa-image"></i>
+              <p>Processed image will appear here</p>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="isProcessing">
+            <div class="loading">
+              <i class="fas fa-spinner fa-spin"></i>
+              <p>Removing background...</p>
+            </div>
+          </ng-container>
+          <img *ngIf="processedImage" [src]="processedImage" alt="Processed Image">
+        </div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <!-- Process Controls -->
+      <div class="process-controls">
+        <button class="btn primary" (click)="removeBackground()" [disabled]="isProcessing">
+          <i class="fas fa-magic"></i>
+          {{ isProcessing ? 'Processing...' : 'Remove Background' }}
+        </button>
+        <button class="btn secondary" (click)="fileInput.click()">
+          <i class="fas fa-image"></i>
+          Choose Different Image
+        </button>
+      </div>
+
+      <!-- Download Controls -->
+      <div class="download-controls" *ngIf="processedImage">
+        <button class="btn success" (click)="downloadImage(processedImage)">
+          <i class="fas fa-download"></i>
+          Download Processed Image
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

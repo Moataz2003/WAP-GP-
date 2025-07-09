@@ -1,0 +1,10 @@
+<div class="background-remover">
+  <button
+    [disabled]="!imageUrl || isProcessing"
+    (click)="removeBackground()"
+    class="remove-bg-btn action-btn"
+    [class.processing]="isProcessing">
+    <i class="fas fa-eraser"></i>
+    <span>{{ isProcessing ? 'Removing Background...' : 'Remove Background' }}</span>
+  </button>
+</div>

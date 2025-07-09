@@ -1,0 +1,162 @@
+<div [ngClass]="containerClass" [style.--step]="step" [ngSwitch]="step">
+
+  <!-- Progress Bar -->
+  <div class="stage-progress"></div>
+
+  <!-- Step 1: Brand Name -->
+  <div *ngSwitchCase="1" class="step">
+    <h2><strong>START</strong> CREATING YOUR VISUALS<br>IN A <strong>BLINK</strong> OF AN EYE</h2>
+    <p class="brand-name-p">Type it • Wish it • See it</p>
+    <input [(ngModel)]="brandName" (ngModelChange)="onInputChange()" placeholder="Enter your brand name" class="input" dir="auto" />
+    <button (click)="nextStep()" [disabled]="!brandName" class="next-btn">Next</button>
+  </div>
+
+  <!-- Step 2: Style Selection -->
+  <div *ngSwitchCase="2" class="step">
+    <h2>Choose Your Brand Style</h2>
+    <div class="input-container">
+      <input type="text" class="input" [(ngModel)]="brandStyle" (ngModelChange)="onInputChange()"
+             [placeholder]="currentLanguage === 'en' ? 'Enter your brand style' : 'أدخل نمط علامتك التجارية'"
+             [attr.dir]="textDirection">
+    </div>
+
+    <div class="style-grid">
+      <div *ngFor="let style of styles" class="style-card" [ngClass]="{ 'selected': style.name === brandStyle }"
+        [style.backgroundImage]="'url(' + style.image + ')'" (click)="selectStyle(style.name)">
+
+        <i class="fas fa-info-circle" (click)="openStylePreview($event, style.name)"></i>
+
+        <div class="style-overlay">
+          {{ style.name }}
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button (click)="previousStep()" class="back-btn">Back</button>
+      <button (click)="nextStep()" [disabled]="!brandStyle" class="next-btn">Next</button>
+    </div>
+  </div>
+
+  <!-- Modal for Style Previews -->
+  <div *ngIf="modalOpen" class="modal-overlay">
+    <div class="modal-content">
+      <div class="close-icon" (click)="closeStyleModal()">
+        <i class="fa-solid fa-xmark"></i>
+      </div>
+      <h3>{{ currentStyle }} Style Preview</h3>
+      <div class="images-grid">
+        <img *ngFor="let img of currentImages" [src]="img" alt="Preview Image">
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 3: Prompt Input -->
+  <div *ngSwitchCase="3" class="step">
+    <h2>Describe Your Vision</h2>
+    <div class="input-with-controls">
+      <input type="text" class="input" [(ngModel)]="prompt" (ngModelChange)="onInputChange()"
+             [placeholder]="currentLanguage === 'en' ? 'Enter your prompt' : 'أدخل رؤيتك'"
+             [attr.dir]="textDirection">
+      <button class="icon-btn mic-btn"
+        [class.recording]="isListeningPrompt"
+        [class.processing]="isProcessing"
+        [class.disabled]="!isRecognitionSupported"
+        (click)="startPromptVoiceInput()"
+        [attr.title]="isRecognitionSupported ? (isListeningPrompt ? 'Click to stop recording' : 'Click to speak your prompt') : 'Voice input not supported'">
+        <i class="fas fa-microphone" *ngIf="!isListeningPrompt && !isProcessing && isRecognitionSupported"></i>
+        <i class="fas fa-stop" *ngIf="isListeningPrompt && !isProcessing"></i>
+        <i class="fas fa-spinner" *ngIf="isProcessing"></i>
+        <i class="fas fa-microphone-slash" *ngIf="!isRecognitionSupported"></i>
+      </button>
+      <button class="icon-btn lang-btn" (click)="toggleLanguage()" title="Toggle language">
+        <i class="fas fa-language"></i>
+      </button>
+    </div>
+    <div class="btn-row">
+      <button (click)="previousStep()" class="back-btn">Back</button>
+      <button (click)="generateImage()" [disabled]="!prompt" class="next-btn create-btn"><i class="fas fa-magic"></i>Generate</button>
+    </div>
+  </div>
+
+  <!-- Step 4: Image Output -->
+  <div *ngSwitchCase="4" class="step">
+    <h2>Your Generated Visual</h2>
+
+    <div class="generation-container">
+      <div class="output-grid">
+        <!-- Left Side: Generated Image -->
+        <div class="image-section">
+          <!-- Loading State -->
+          <div *ngIf="isLoading" class="image-box loading-state">
+            <app-loader></app-loader>
+          </div>
+
+          <!-- Generated Image Content -->
+          <div *ngIf="generatedImage" class="image-box">
+            <div class="image-wrapper">
+              <img [src]="generatedImage.image" alt="Generated Image" class="generated-image" (click)="openModal()">
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Side: Controls -->
+        <div class="controls-section">
+          <div class="control-panel">
+            <h3>Image Controls</h3>
+            <div class="action-buttons-vertical">
+              <button (click)="addToFavorites($event)" class="action-btn favorite-btn" title="Add to Favorites">
+                <i class="fa fa-heart"></i>
+                <span>Add to Favorites</span>
+              </button>
+              <button (click)="downloadImage($event)" class="action-btn download-btn" title="Download Image">
+                <i class="fa fa-download"></i>
+                <span>Download Image</span>
+              </button>
+              <button (click)="editInImg2Img(generatedImage?.image || ''); $event.stopPropagation()" class="action-btn edit-btn" title="Edit in Img2Img">
+                <i class="fa fa-edit"></i>
+                <span>Edit Image</span>
+              </button>
+              <button (click)="goToBackgroundRemoval($event)" class="action-btn remove-bg-btn" title="Remove Background">
+                <i class="fas fa-eraser"></i>
+                <span>Remove Background</span>
+              </button>
+              <button (click)="findSimilarLogos($event)" class="action-btn similar-logos-btn" title="Find Similar Logos">
+                <i class="fas fa-search"></i>
+                <span>Find Similar Logos</span>
+              </button>
+            </div>
+
+            <div class="navigation-buttons">
+              <button (click)="restart()" class="back-btn">Start Over</button>
+              <button (click)="generateImage()" class="next-btn create-btn">
+                <i class="fas fa-magic"></i>Regenerate
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="images !== null && images!.length > 0; else noImages" class="similar-images">
+        <h3>Similar Images</h3>
+        <div class="images-grid">
+          <!-- Add your similar images here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div *ngIf="isModalOpen" class="modal-overlay" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <button class="close-btn" (click)="closeModal()">×</button>
+      <img *ngIf="generatedImage" [src]="generatedImage.image" alt="Full Image" class="modal-image" />
+    </div>
+  </div>
+
+
+
+  <ng-template #noImages>
+    <!-- <p>No images found.</p> -->
+  </ng-template>
+</div>

@@ -1,0 +1,130 @@
+<!-- Navigation Bar -->
+<nav class="main-nav" [class.hide]="isSidebarOpen">
+  <div class="nav-container">
+    <div class="nav-left">
+      <h2 class="app-title">Wish A Pic</h2>
+    </div>
+    <div class="nav-right">
+      <div class="nav-auth">
+        <ng-container *ngIf="!accountService.isAuthenticated()">
+          <a [routerLink]="['/auth']" [queryParams]="{mode: 'login'}" class="auth-btn login">
+            <i class="fas fa-sign-in-alt"></i>
+            <span>Login</span>
+          </a>
+          <a [routerLink]="['/auth']" [queryParams]="{mode: 'register'}" class="auth-btn register">
+            <i class="fas fa-user-plus"></i>
+            <span>Register</span>
+          </a>
+        </ng-container>
+        <ng-container *ngIf="accountService.isAuthenticated()">
+          <span class="user-welcome">
+            <i class="fas fa-user-circle"></i>
+            {{ accountService.currentUserName }}
+          </span>
+          <a href="#" class="auth-btn logout" (click)="onLogOutClicked()">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Logout</span>
+          </a>
+        </ng-container>
+      </div>
+      <button class="sidebar-toggle" (click)="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Sidebar -->
+<div class="sidebar" [class.active]="isSidebarOpen">
+  <div class="sidebar-header">
+    <button class="close-sidebar" (click)="toggleSidebar()">
+      <i class="fas fa-times"></i>
+    </button>
+    <h2 class="app-title">Wish A Pic</h2>
+  </div>
+
+  <div class="sidebar-content">
+    <ul class="sidebar-menu">
+      <li>
+        <a [routerLink]="['/app-home']" routerLinkActive="active" (click)="closeSidebar()">
+          <span>Home</span>
+          <i class="fas fa-home"></i>
+        </a>
+      </li>
+      <li>
+        <a [routerLink]="['/generate-image']" routerLinkActive="active" (click)="closeSidebar()">
+          <span>Generate Image</span>
+          <i class="fas fa-magic"></i>
+        </a>
+      </li>
+      <li>
+        <a [routerLink]="['/img2img']" routerLinkActive="active" (click)="closeSidebar()">
+          <span>Edit Image</span>
+          <i class="fas fa-edit"></i>
+        </a>
+      </li>
+      <li>
+        <a [routerLink]="['/background-removal']" routerLinkActive="active" (click)="closeSidebar()">
+          <span>Remove Background</span>
+          <i class="fas fa-eraser"></i>
+        </a>
+      </li>
+      <li>
+        <a [routerLink]="['/logo-similarity']" routerLinkActive="active" (click)="closeSidebar()">
+          <span>Logo Similarity</span>
+          <i class="fas fa-search"></i>
+        </a>
+      </li>
+      <li>
+        <a [routerLink]="['/app-history']" routerLinkActive="active" (click)="closeSidebar()">
+          <span>History</span>
+          <i class="fas fa-history"></i>
+        </a>
+      </li>
+      <li>
+        <a [routerLink]="['/app-favorites']" routerLinkActive="active" (click)="closeSidebar()">
+          <span>Favorites</span>
+          <i class="fas fa-heart"></i>
+        </a>
+      </li>
+    </ul>
+
+    <div class="sidebar-footer">
+      <ng-container *ngIf="!accountService.isAuthenticated()">
+        <a [routerLink]="['/auth']" [queryParams]="{mode: 'login'}" class="auth-btn login" (click)="closeSidebar()">
+          <span>Login</span>
+          <i class="fas fa-sign-in-alt"></i>
+        </a>
+        <a [routerLink]="['/auth']" [queryParams]="{mode: 'register'}" class="auth-btn register" (click)="closeSidebar()">
+          <span>Register</span>
+          <i class="fas fa-user-plus"></i>
+        </a>
+      </ng-container>
+      <ng-container *ngIf="accountService.isAuthenticated()">
+        <div class="user-info">
+          <span>{{ accountService.currentUserName }}</span>
+          <i class="fas fa-user-circle"></i>
+        </div>
+        <a href="#" class="auth-btn logout" (click)="onLogOutClicked()">
+          <span>Logout</span>
+          <i class="fas fa-sign-out-alt"></i>
+        </a>
+      </ng-container>
+    </div>
+  </div>
+</div>
+
+<!-- Main Content -->
+<div class="main-content" [class.sidebar-active]="isSidebarOpen">
+  <div class="page-container">
+    <ng-container *ngIf="loaderService.loading$ | async">
+      <div class="global-loader-overlay">
+        <app-loader></app-loader>
+      </div>
+    </ng-container>
+    <router-outlet></router-outlet>
+  </div>
+</div>
+
+<!-- Overlay -->
+<div class="sidebar-overlay" [class.active]="isSidebarOpen" (click)="closeSidebar()"></div>

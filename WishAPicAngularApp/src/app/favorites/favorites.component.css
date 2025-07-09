@@ -1,0 +1,233 @@
+/* Container Styles */
+.image-box {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+  padding: 30px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Image Card Styles */
+.image-wrapper {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #1a1a1a;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+}
+
+.image-wrapper:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 32px rgba(155, 120, 255, 0.2);
+}
+
+.image-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.image-wrapper:hover img {
+  transform: scale(1.05);
+}
+
+/* Overlay Styles */
+.image-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.2) 0%,
+    rgba(0, 0, 0, 0.6) 100%
+  );
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 20px;
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.image-container:hover .image-overlay {
+  opacity: 1;
+}
+
+/* Action Buttons */
+.image-overlay {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+}
+
+.image-overlay button {
+  background: rgba(155, 120, 255, 0.2);
+  border: 2px solid rgba(155, 120, 255, 0.5);
+  color: #fff;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.image-overlay button::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(155, 120, 255, 0.2);
+  transform: scale(0);
+  transition: transform 0.3s ease;
+  border-radius: 50%;
+}
+
+.image-overlay button:hover {
+  background: rgba(155, 120, 255, 0.3);
+  border-color: #9b78ff;
+  transform: translateY(-4px);
+}
+
+.image-overlay button:hover::before {
+  transform: scale(1);
+}
+
+.image-overlay button i {
+  position: relative;
+  z-index: 1;
+  transition: all 0.3s ease;
+}
+
+/* Button-specific hover effects */
+.image-overlay button:hover i.fa-heart-broken {
+  color: #ff4d4d;
+}
+
+.image-overlay button:hover i.fa-download {
+  color: #4dff88;
+}
+
+.image-overlay button:hover i.fa-edit {
+  color: #4d88ff;
+}
+
+/* Empty State */
+.no-images {
+  text-align: center;
+  padding: 60px 20px;
+  color: #9b78ff;
+}
+
+.no-images h3 {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+  opacity: 0.8;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .image-box {
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    padding: 16px;
+    gap: 16px;
+  }
+
+  .image-overlay button {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+  }
+}
+
+/* Loading Animation */
+@keyframes shimmer {
+  0% {
+    background-position: -468px 0;
+  }
+  100% {
+    background-position: 468px 0;
+  }
+}
+
+.image-wrapper.loading {
+  background: linear-gradient(
+    to right,
+    #1a1a1a 8%,
+    #2a2a2a 18%,
+    #1a1a1a 33%
+  );
+  background-size: 800px 104px;
+  animation: shimmer 1.5s linear infinite;
+}
+
+/* Image Load Animation */
+.image-container img {
+  opacity: 0;
+  animation: fadeIn 0.5s ease forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.action-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  position: absolute;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.6);
+  padding: 0.5rem;
+  border-radius: 8px;
+  backdrop-filter: blur(4px);
+}
+
+.action-btn {
+  background: transparent;
+  border: none;
+  color: white;
+  padding: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 4px;
+}
+
+.action-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.action-btn i {
+  font-size: 1.2rem;
+}

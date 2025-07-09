@@ -1,0 +1,61 @@
+<div class="history-container">
+  <div class="history-header">
+    <h1>Image History</h1>
+  </div>
+
+  <div *ngIf="imageData.length > 0; else noImages" class="image-box">
+    <div *ngFor="let img of imageData" class="image-wrapper" [class.loading]="!img.image || loadingFullImage[img.id!]">
+      <div class="image-container">
+        <img
+          [src]="img.image"
+          [alt]="'History image'"
+          loading="lazy"
+          width="280"
+          height="280"
+          decoding="async"
+        />
+        <div class="prompt-overlay">{{img.prompt}}</div>
+        <div class="image-overlay">
+          <div class="action-buttons">
+            <button (click)="onDownloadClicked(img); $event.stopPropagation()" class="action-btn" title="Download">
+              <i class="fas fa-download"></i>
+            </button>
+            <button (click)="onEditClicked(img); $event.stopPropagation()" class="action-btn" title="Edit in Img2Img">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button *ngIf="!img.isFavorite" (click)="onAddClicked(img); $event.stopPropagation()" class="action-btn" title="Add to Favorites">
+              <i class="fas fa-heart"></i>
+            </button>
+            <button *ngIf="img.isFavorite" (click)="onRemoveFromFavoritesClicked(img); $event.stopPropagation()" class="action-btn" title="Remove from Favorites">
+              <i class="fas fa-heart-broken"></i>
+            </button>
+            <button (click)="findSimilarLogos(img); $event.stopPropagation()" class="action-btn" title="Find Similar Logos">
+              <i class="fas fa-search"></i>
+            </button>
+            <button (click)="onRemoveFromHistoryClicked(img); $event.stopPropagation()" class="action-btn" title="Remove from History">
+              <i class="fas fa-trash-alt"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading indicator -->
+    <div *ngIf="isLoading" class="loading-indicator">
+      <div class="spinner"></div>
+      <p>Loading more images...</p>
+    </div>
+  </div>
+</div>
+
+<ng-template #noImages>
+  <div class="no-images" *ngIf="!isLoading">
+    <i class="fas fa-history no-images-icon"></i>
+    <h3>No images in history</h3>
+    <p>Generated images will appear in your history</p>
+  </div>
+  <div class="loading-indicator" *ngIf="isLoading">
+    <div class="spinner"></div>
+    <p>Loading images...</p>
+  </div>
+</ng-template>

@@ -1,0 +1,177 @@
+<div class="hero-section">
+  <h1 class="main-title">
+    <span class="text-animate glowing-text">Welcome to</span>
+    <span class="brand-name gradient-text">WishAPic</span>
+  </h1>
+
+  <div class="tagline">
+    <span class="text-animate-delay-1 gradient-text">Transform</span>
+    <span class="text-animate-delay-2 gradient-text">your ideas</span>
+    <span class="text-animate-delay-3 gradient-text">into reality</span>
+  </div>
+
+  <p class="description text-animate-fade">
+    <span>Create stunning visuals</span> with the power of AI.
+    <span>Turn your imagination into beautiful images in seconds.</span>
+  </p>
+
+  <!-- Enhanced CTA Section -->
+  <div class="cta-section parallax-section">
+    <div class="cta-content scroll-reveal">
+      <div class="cta-buttons">
+        <button class="cta-button neon-button primary" (click)="navigateToGenerate()" [class.loading]="isLoading" [disabled]="isLoading">
+          <span class="button-text" [class.fade-out]="isLoading">
+            {{ accountService.currentUserName ? 'Start Creating' : 'Get Started Free' }}
+          </span>
+          <div class="loading-spinner" *ngIf="isLoading">
+            <div class="spinner"></div>
+          </div>
+          <div class="button-glow"></div>
+          <i class="fas fa-arrow-right" [class.fade-out]="isLoading"></i>
+        </button>
+        <button class="cta-button neon-button secondary" *ngIf="!accountService.currentUserName" (click)="router.navigate(['/auth'], { queryParams: { mode: 'register' } })">
+          <span class="button-text">Sign Up Now</span>
+          <div class="button-glow"></div>
+          <i class="fas fa-user-plus"></i>
+        </button>
+      </div>
+      <div class="trust-badges">
+        <div class="badge scroll-reveal">
+          <i class="fas fa-shield-alt"></i>
+          <span>Secure & Private</span>
+        </div>
+        <div class="badge scroll-reveal">
+          <i class="fas fa-bolt"></i>
+          <span>Lightning Fast</span>
+        </div>
+        <div class="badge scroll-reveal">
+          <i class="fas fa-clock"></i>
+          <span>24/7 Support</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="features-grid">
+    <div class="feature-card text-animate-up">
+      <i class="fas fa-magic"></i>
+      <h3 class="gradient-text">AI-Powered</h3>
+      <p class="shimmer-text">State-of-the-art image generation</p>
+    </div>
+    <div class="feature-card text-animate-up-delay-1">
+      <i class="fas fa-bolt"></i>
+      <h3 class="gradient-text">Lightning Fast</h3>
+      <p class="shimmer-text">Get results in few minutes</p>
+    </div>
+    <div class="feature-card text-animate-up-delay-2">
+      <i class="fas fa-palette"></i>
+      <h3 class="gradient-text">Creative Freedom</h3>
+      <p class="shimmer-text">Unlimited style options</p>
+    </div>
+  </div>
+</div>
+
+<!-- Interactive Showcase Section -->
+<div class="interactive-showcase parallax-section">
+  <div class="cosmic-particles"></div>
+  <h2 class="section-title gradient-text scroll-reveal">Experience the Magic</h2>
+  <div class="showcase-container">
+    <div class="interactive-card scroll-reveal">
+      <div class="card-3d-wrapper">
+        <div class="before-image">
+          <img [src]="currentPair.before" [alt]="'Before - ' + currentPair.prompt">
+          <span class="label">Before</span>
+        </div>
+        <div class="after-image">
+          <img [src]="currentPair.after" [alt]="'After - ' + currentPair.prompt">
+          <span class="label">After</span>
+        </div>
+      </div>
+      <div class="slider-handle"></div>
+    </div>
+    <div class="navigation-container">
+      <div class="slider-dots">
+        <button
+          *ngFor="let pair of beforeAfterPairs; let i = index"
+          class="dot"
+          [class.active]="i === currentPairIndex"
+          (click)="currentPairIndex = i">
+        </button>
+      </div>
+      <div class="image-navigation">
+        <button class="image-nav-button" (click)="previousImage()">
+          <i class="fas fa-chevron-left"></i>
+          Previous
+        </button>
+        <button class="image-nav-button" (click)="nextImage()">
+          Next
+          <i class="fas fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Statistics Section -->
+<div class="stats-section parallax-section">
+  <div class="cosmic-particles"></div>
+  <div class="stats-container">
+    <div class="stat-card scroll-reveal" *ngFor="let stat of statistics">
+      <div class="stat-value gradient-text">
+        <span class="counter" [attr.data-target]="stat.value">0</span>{{stat.suffix}}
+      </div>
+      <div class="stat-label neon-text">{{stat.label}}</div>
+      <div class="stat-icon">
+        <i [class]="stat.icon"></i>
+      </div>
+      <div class="stat-glow"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Creative Process Section -->
+<div class="creative-process-section">
+  <h2 class="section-title gradient-text scroll-reveal">Your Creative Journey</h2>
+  <div class="process-timeline">
+    <div class="process-step scroll-reveal" data-step="1">
+      <div class="step-icon">
+        <i class="fas fa-lightbulb"></i>
+      </div>
+      <h3 class="step-title neon-text">Imagine</h3>
+      <p class="step-description">Transform your ideas into detailed prompts</p>
+      <div class="step-glow"></div>
+    </div>
+    <div class="process-step scroll-reveal" data-step="2">
+      <div class="step-icon">
+        <i class="fas fa-wand-magic-sparkles"></i>
+      </div>
+      <h3 class="step-title neon-text">Generate</h3>
+      <p class="step-description">Watch AI bring your vision to life</p>
+      <div class="step-glow"></div>
+    </div>
+    <div class="process-step scroll-reveal" data-step="3">
+      <div class="step-icon">
+        <i class="fas fa-star"></i>
+      </div>
+      <h3 class="step-title neon-text">Perfect</h3>
+      <p class="step-description">Refine and enhance your creation</p>
+      <div class="step-glow"></div>
+    </div>
+  </div>
+</div>
+
+<!-- AI Features Grid -->
+<div class="ai-features-section parallax-section">
+  <h2 class="section-title gradient-text scroll-reveal">Advanced AI Capabilities</h2>
+  <div class="features-container">
+    <div class="ai-feature-card scroll-reveal" *ngFor="let feature of aiFeatures">
+      <div class="feature-icon-wrapper">
+        <i [class]="feature.icon"></i>
+      </div>
+      <h3 class="feature-title holographic-text">{{feature.title}}</h3>
+      <p class="feature-description shimmer-text">{{feature.description}}</p>
+      <div class="feature-backdrop glass-morphism"></div>
+      <div class="feature-glow"></div>
+    </div>
+  </div>
+</div>

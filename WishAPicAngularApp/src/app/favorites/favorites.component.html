@@ -1,0 +1,32 @@
+<div class="favorites-container">
+  <div *ngIf="imageData !== null && imageData!.length > 0; else noImages" class="image-box">
+    <div *ngFor="let img of imageData" class="image-wrapper" [class.loading]="!img.image">
+      <div class="image-container">
+        <img [src]="img.image" [alt]="'Favorite image'" loading="lazy" />
+        <div class="image-overlay">
+          <div class="action-buttons">
+            <button (click)="onDownloadClicked(img); $event.stopPropagation()" class="action-btn" title="Download">
+              <i class="fas fa-download"></i>
+            </button>
+            <button (click)="onEditClicked(img); $event.stopPropagation()" class="action-btn" title="Edit in Img2Img">
+              <i class="fas fa-edit"></i>
+            </button>
+            <button (click)="onRemoveFromFavoritesClicked(img); $event.stopPropagation()" class="action-btn" title="Remove from Favorites">
+              <i class="fas fa-heart-broken"></i>
+            </button>
+            <button (click)="findSimilarLogos(img); $event.stopPropagation()" class="action-btn" title="Find Similar Logos">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<ng-template #noImages>
+  <div class="no-images">
+    <h3>No favorite images found</h3>
+    <p>Images you mark as favorites will appear here</p>
+  </div>
+</ng-template>
